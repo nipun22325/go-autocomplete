@@ -1,32 +1,8 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"log"
-	"os"
 	"sort"
-	"strings"
 )
-
-func loadWordsFromFile(filePath string, t *Trie){
-	file, err := os.Open(filePath)
-	if err!= nil {
-		log.Fatalf("Failed to open word list: %v", err)
-	}
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan(){
-		word:= strings.ToLower(scanner.Text())
-		if len(word) > 0{
-			t.Insert(word)
-		}
-	}
-	if err := scanner.Err(); err != nil {
-		log.Fatalf("Error reading file: %v", err)
-	}
-}
-	
 
 type TrieNode struct {
 	links map[rune]*TrieNode
@@ -84,13 +60,4 @@ func sortWordsByLength(words []string) []string{
 		return len(sortedResults[i]) < len(sortedResults[j])
 	})
 	return sortedResults
-}
-
-func main() {
-	root := NewTrie()
-	loadWordsFromFile("english-words.txt", root);
-	suggestedWords := root.Search("ap")
-	for _, word := range suggestedWords {
-		fmt.Println(word);
-	}
 }

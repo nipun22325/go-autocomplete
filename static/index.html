@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>go-autocomplete</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 text-black p-6">
+    <div class="max-w-md mx-auto bg-white shadow-lg rounded-xl p-6">
+      <h2 class="text-2xl font-bold mb-4 text-center">Autocomplete Demo</h2>
+      <input
+        type="text"
+        oninput="search(this.value)"
+        placeholder="Type something..."
+        class="w-full p-2 border border-black rounded mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <ul id="results" class="space-y-2 text-base"></ul>
+      <script>
+        function search(query) {
+          if (query.length == 0) {
+            document.getElementById("results").innerHTML = "";
+            return;
+          }
+          fetch("/autocomplete?q=" + query)
+            .then((res) => res.json())
+            .then((data) => {
+              const list = document.getElementById("results");
+              list.innerHTML = "";
+              data.forEach((item) => {
+                const li = document.createElement("li");
+                li.textContent = item;
+                list.appendChild(li);
+              });
+            });
+        }
+      </script>
+    </div>
+  </body>
+</html>
