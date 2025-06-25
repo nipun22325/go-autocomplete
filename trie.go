@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -59,7 +60,8 @@ func (t *Trie) Search(prefix string) []string {
 		}
 		node = node.links[ch]
 	}
-	return collectWords(node, prefix)
+	suggestions := collectWords(node, prefix)
+	return sortWordsByLength(suggestions);
 }
 
 func collectWords(node *TrieNode, prefix string) []string {
@@ -71,6 +73,17 @@ func collectWords(node *TrieNode, prefix string) []string {
 		results = append(results, collectWords(link, prefix+string(ch))...)
 	}
 	return results
+}
+
+func sortWordsByLength(words []string) []string{
+	// Make a copy to avoid modifying the original slice
+	sortedResults := make([]string, len(words))
+	copy(sortedResults, words)
+	// Sort by length (shorter words come first)
+	sort.Slice(sortedResults, func(i, j int) bool {
+		return len(sortedResults[i]) < len(sortedResults[j])
+	})
+	return sortedResults
 }
 
 func main() {
