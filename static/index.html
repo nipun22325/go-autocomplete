@@ -16,20 +16,29 @@
       <ul id="results" class="space-y-2 text-base"></ul>
       <script>
         function search(query) {
+          const list = document.getElementById("results"); // ✅ define list here
+
           if (query.length == 0) {
-            document.getElementById("results").innerHTML = "";
+            list.innerHTML = ""; // now this works
             return;
           }
+
           fetch("/autocomplete?q=" + query)
             .then((res) => res.json())
             .then((data) => {
-              const list = document.getElementById("results");
               list.innerHTML = "";
-              data.forEach((item) => {
+              if (data.length === 0) {
                 const li = document.createElement("li");
-                li.textContent = item;
+                li.textContent = "No suggestions found";
+                li.className = "text-gray-500 italic";
                 list.appendChild(li);
-              });
+              } else {
+                data.forEach((item) => {
+                  const li = document.createElement("li");
+                  li.textContent = item;
+                  list.appendChild(li);
+                });
+              }
             });
         }
       </script>
