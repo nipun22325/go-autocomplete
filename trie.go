@@ -1,6 +1,31 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"log"
+	"os"
+	"strings"
+)
+
+func loadWordsFromFile(filePath string, t *Trie){
+	file, err := os.Open(filePath)
+	if err!= nil {
+		log.Fatalf("Failed to open word list: %v", err)
+	}
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan(){
+		word:= strings.ToLower(scanner.Text())
+		if len(word) > 0{
+			t.Insert(word)
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatalf("Error reading file: %v", err)
+	}
+}
+	
 
 type TrieNode struct {
 	links map[rune]*TrieNode
@@ -50,11 +75,8 @@ func collectWords(node *TrieNode, prefix string) []string {
 
 func main() {
 	root := NewTrie()
-	root.Insert("app")
-	root.Insert("apple")
-	root.Insert("apt")
-	root.Insert("bat")
-	suggestedWords := root.Search("app")
+	loadWordsFromFile("english-words.txt", root);
+	suggestedWords := root.Search("ap")
 	for _, word := range suggestedWords {
 		fmt.Println(word);
 	}
